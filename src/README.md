@@ -1,4 +1,8 @@
+<br>
+
 # **Comic Book Managment System API**
+
+![Example screenshot](/docs/banner.png)
 
 Link to Github repo [_here_](http).
 
@@ -8,7 +12,7 @@ link to Trello Implementation plan [_here_](http).
 
 ## Table of Contents
 
-- [General Info](#the-reason-for-building-this-app)
+- [General Info](#the-purpose-for-building-this-app)
 - [Database info](#database-system-used-for-this-project)
 - [Entity Relationship Diagram](#erd)
 - [End Points](#end-points-for-the-api)
@@ -19,13 +23,11 @@ link to Trello Implementation plan [_here_](http).
 <br>
 <br>
 
-### **The reason for building this app**
+### **The purpose for building this app**
 
 <br>
 
-The PEP8 style guidelines were implemented to develop this Python application.
-Example of some of the guidelines (PEP 8 – Style Guide for Python Code | peps.python.org 2022)The PEP8 style guidelines were implemented to develop this Python application.
-Example of some of the guidelines (PEP 8 – Style Guide for Python Code | peps.python.org 2022)
+I own a lot of comic books, and I can never remember what I have. I hate flicking through piles to see which ones I have because they get damaged, are messy, and can waste a lot of time. So if I have an app with a list that I can go through, it will save a lot of time and prevent my comics from getting damaged. Also, sometimes I need help deciding which one to read because I could spend hrs deciding. The app will generate a random comic book which will solve this problem. As a collector of comic books, I always wonder how much all my comics are worth, so the app will tell me how many comics I have and what they are worth to keep track of my investments.
 
 <br>
 <br>
@@ -67,6 +69,7 @@ Example of some of the guidelines (PEP 8 – Style Guide for Python Code | peps.
 link to Trello Implementation plan [_here_](http;).
 
 Describe the way tasks are allocated and tracked in your project
+![Example screenshot](/docs/trello.png)
 
 <br>
 <br>
