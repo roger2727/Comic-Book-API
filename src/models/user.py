@@ -1,16 +1,40 @@
-from init import db,ma
+
+from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import Length, And, Regexp
 
 class User(db.Model):
     __tablename__ = 'users'
-
+    # USER FIELDS
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String)
-    last_name = db.Column(db.String)
+    first_name = db.Column(db.String,nullable=False)
+    last_name = db.Column(db.String,nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
-    password = db.Column(db.String, nullable=False)
+    password = db.Column(db.String,nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    # TABLE RELATIONS
+    comics = db.relationship('Comic', back_populates='user', cascade='all, delete')
+    review= db.relationship('Review', back_populates='user', cascade='all, delete')
+
 
 class UserSchema(ma.Schema):
+    # GETS COMIC AND REVIEW FIELDS
+    comics = fields.List(fields.Nested('ComicSchema', exclude=['user']))
+    review = fields.List(fields.Nested('ReviewSchema', exclude=['user']))
+    
+     #  password
+     
+    password = fields.String(required=True, validate=
+        Length(min=8, error='Password must be at least 8 characters long'),
+        
+    )
+     
+     
+    # password = fields.String(required=True,validate=
+    #     [Length(min=6, max=20)], error='password must be at least 6 characters long'),
+    #     Regexp('^[a-zA-Z0-9]+$', error='Only letters and numbers are allowed')
+
     class Meta:
-        fields = ('id', 'first_name','last_name', 'email', 'password', 'is_admin', )    
+        # FIELDS TO DISPLAY
+        fields = ('id','user' ,'first_name','last_name', 'email', 'password', 'is_admin')
+        ordered = True

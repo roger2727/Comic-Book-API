@@ -5,7 +5,7 @@ class Review(db.Model):
     __tablename__ = 'reviews'
     # REVIEW FIELDS
     id = db.Column(db.Integer, primary_key=True)
-    review = db.Column(db.Text)
+    review = db.Column(db.Text(200))
     rating = db.Column(db.Integer)
     date = db.Column(db.Date)
     # FOREIGN_KEYS

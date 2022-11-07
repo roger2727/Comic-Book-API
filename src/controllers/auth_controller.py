@@ -9,8 +9,10 @@ from  models.comic import Comic, ComicSchema
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # SHOWS ALL USERS
-@auth_bp.route('/users/')
-def get_users():
+@auth_bp.route('/users/<int:id>')
+@jwt_required()
+def get_users(id):
+    authorize()
     stmt = db.select(User)
     users = db.session.scalars(stmt)
     return UserSchema(many=True, exclude=['password']).dump(users)  
@@ -18,6 +20,7 @@ def get_users():
 # REGISTER NEW USER ACCOUNT
 @auth_bp.route('/register/', methods=['POST'])
 def auth_register():
+    data = UserSchema().load(request.json)
     try:
        
         user = User(
@@ -32,8 +35,9 @@ def auth_register():
         db.session.commit()
         
         return UserSchema(exclude=['password']).dump(user), 201
-    except IntegrityError:
+    except Exception:
         return {'error': 'Email address already in use'}, 409
+    
 
 # LOGIN USER ACCOUNT
 @auth_bp.route('/login/', methods=['POST'])
