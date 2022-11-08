@@ -3,7 +3,7 @@ from init import db, bcrypt
 from datetime import date
 from models.comic import Comic
 from models.user import User
-from models.comment import Review
+from models.review import Review
 
 
 db_commands = Blueprint('db', __name__)

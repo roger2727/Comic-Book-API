@@ -16,8 +16,8 @@ link to Trello Implementation plan [_click here_](http).
 ## Table of Contents
 
 - [General Info](#the-purpose-for-building-this-app)
-- [Database info](#database-system-used-for-this-project-and-why)
-- [Entity Relationship Diagram](#erd)
+- [Database Info](#database-system-used-for-this-project-and-why)
+- [ERD and Relations Info](#erd)
 - [End Points](#api-endpoints)
 - [Implementation Plan](#implementation-plan)
 - [Tech Stack](#tech-stack)
@@ -30,7 +30,7 @@ link to Trello Implementation plan [_click here_](http).
 <!-- R1 Identification of the problem you are trying to solve by building this particular app. -->
 <!-- R2 Why is it a problem that needs solving? -->
 
-I own a lot of comic books, and I can never remember what I have. I hate flicking through piles to see which ones I have because they get damaged, are messy, and can waste a lot of time. So if I have an app with a list that I can go through, it will save a lot of time and prevent my comics from getting damaged. Also, sometimes I need help deciding which one to read because I could spend hrs deciding. The app will generate a random comic book which will solve this problem. As a collector of comic books, I always wonder how much all my comics are worth, so the app will tell me how many comics I have and what they are worth to keep track of my investments.
+I own a lot of comic books, and I can never remember what I have. I hate flicking through piles to see which ones I have because they get damaged, are messy, and can waste a lot of time. So if I had an app to store all my comic books , it will save a lot of time and prevent my comics from getting damaged. Also, sometimes I need help deciding which one to read because I could spend hrs deciding. The app will generate a random comic book which will solve this problem. As a collector of comic books, I always wonder how many comics i own and how much all my comics are worth, so if i had a app to store all this information it would help me keep track of my comic book investments.
 
 <br>
 <br>
@@ -53,7 +53,7 @@ For this project, I have chosen to use PostgreSQL.I have chosen Psql because it 
 
 <br>
 
-The main functionalities of a Relational object Database (Orm) are to map relational SQL objects, and you have foreign and primary keys to actual objects and code so you can more easily both read, view and respond in objects and also manipulate them so you can set properties and make changes. The ORM is great as you won't need to rely on special technics or learn a new query language to be productive with the data system. another benefit of using relational object mapping is that the models are dry because you only write the models once, which makes it faster and easier to update and maintain.
+The main functionalities of a Relational object Database (Orm) are to map relational SQL objects, and you have foreign and primary keys to actual objects and code so you can more easily both read, view and respond in objects and also manipulate them so you can set properties and make changes. The ORM is great as you won't need to rely on special technics or learn a new query language to be productive with the data system. another benefit of using relational object mapping is that the models are dry because you only write the models once, which makes it faster and easier to update and maintain.another reason for Using a orm is that it helps prevent SQL injection attacks which could cause security risks.
 
 <br>
 
@@ -68,8 +68,61 @@ The main functionalities of a Relational object Database (Orm) are to map relati
 
 ![Example screenshot](/docs/erd.png)
 
+## Database Realatships
+
+In the ERd above shows The users entity has a one to many relationship to the comics entity becuses the user can store multiple comic books and is linked by the forighn key user_id, and is also linked to the reviews table .the user has mant reviews so it is a one to many. the comics entity has a one to one relationship with the reviews entity becuse each comic book has one personal review by the user. they are linked by the forighn key comic_id in the reviews entity.
+
+## methods/behaviour of the models
+
+```python
+    __tablename__ = 'users'
+    # id is integer and is the primary key
+    id = db.Column(db.Integer, primary_key=True)
+    # first_name is a string and can not be empty
+    first_name = db.Column(db.String,nullable=False)
+    # last_name is a string and can not be empty
+    last_name = db.Column(db.String,nullable=False)
+    # email is s string and is unique so users dont have same email
+    email = db.Column(db.String, nullable=False, unique=True)
+    # password is a string and cant be less then 8 characters
+    password = db.Column(db.String,nullable=False)
+    # is_admin is a boolean
+    is_admin = db.Column(db.Boolean, default=False)
+```
+
 <br>
 <br>
+
+```python
+    __tablename__ = 'comics'
+    # id is a integer and is the primary key
+    id = db.Column(db.Integer, primary_key=True)
+    # title is a string and has a max of 100 characters and can not be empty
+    title = db.Column(db.String(100),nullable=False)
+    # author is a string and has a max of 100 characters
+    author = db.Column(db.String(100))
+    # comic_value is a float to repersent value in dollars
+    comic_value = db.Column(db.Float)
+    # FOREIGN_KEY user_id us used to link to users and must not be empty
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+```
+
+```python
+   __tablename__ = 'reviews'
+    # id is a integer and is the primary key
+    id = db.Column(db.Integer, primary_key=True)
+    # review is a string and and the max characters is 200
+    review = db.Column(db.String(200))
+    # rating is a int and the max is 10
+    rating = db.Column(db.Integer)
+    # date is used to recored date of reviews
+    date = db.Column(db.Date)
+    # user_id is a foreignkey that links to users
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    # comic_d is a foreignkey that links to comics id
+    comic_id = db.Column(db.Integer, db.ForeignKey('comics.id'), nullable=False,unique=True)
+
+```
 
 # API Endpoints
 
@@ -88,39 +141,11 @@ The main functionalities of a Relational object Database (Orm) are to map relati
 
 | HTTP Verbs | Endpoints       | Action                  | Respose                                        |
 | ---------- | --------------- | ----------------------- | ---------------------------------------------- |
-| GET        | /auth/users/1/  | shows all user's        | [Response](#end-point-shows-all-users)         |
 | POST       | /auth/register/ | Register a new user     | [Response](#register-a-new-user)               |
 | POST       | /uath/login/    | login into user account | [Response](#end-point-login-into-user-account) |
 
 <br>
 <br>
-
-### End point: shows all user's
-
-```json
-// ONLY ADMIN HAS ACCES TO INFORMATION
-[
-  {
-    "id": 1,
-    "first_name": "Stan",
-    "last_name": "Lee",
-    "email": "admin@gmail.com",
-    "is_admin": true
-  },
-  {
-    "id": 2,
-    "first_name": "Mitchell",
-    "last_name": "Roger",
-    "email": "roger@gmail.com",
-    "is_admin": false
-  }
-]
-
-// IF NOT ADMIN
-{
-    "error": "You are not authorized to perform this action"
-}
-```
 
 ### Register a new user
 
@@ -185,16 +210,16 @@ The main functionalities of a Relational object Database (Orm) are to map relati
 
 <br>
 
-| HTTP   | Endpoints               | Action                    | Respose                                |
-| ------ | ----------------------- | ------------------------- | -------------------------------------- |
-| GET    | /comics/                | shows all comic books     | [Response](#shows-all-comic-books)     |
-| GET    | /comics/int:id/         | shows user's comic books  | [Response](#register-a-new-user)       |
-| GET    | /comics/search/comic_id | get comic by comic id     | [Response](#get-comic-by-comic-id)     |
-| GET    | /comics//int:id/total/  | get total value of comics | [Response](#get-total-value-of-comics) |
-| GET    | /comics/int:id/random/  | get random comic          | [Response](#get-random-comic)          |
-| POST   | /comics/int:id/add/     | add comic book            | [Response](#add-comic-book)            |
-| PATCH  | /comics/update/int:id/  | Update fields             | [Response](#Update-fields)             |
-| DELETE | /comics/remove/int:id/  | delete's comic book       | [Response](#end-point-login-i)         |
+| HTTP   | Endpoints                          | Action                    | Respose                                |
+| ------ | ---------------------------------- | ------------------------- | -------------------------------------- |
+| GET    | /comics/                           | shows all comic books     | [Response](#shows-all-comic-books)     |
+| GET    | /users/int:id/comics               | shows user's comic books  | [Response](#register-a-new-user)       |
+| GET    | /users/comics/search/int:comic_id  | get comic by comic id     | [Response](#get-comic-by-comic-id)     |
+| GET    | /users/int:id/comics/total/        | get total value of comics | [Response](#get-total-value-of-comics) |
+| GET    | /users/int:id/comics/random/       | get random comic          | [Response](#get-random-comic)          |
+| POST   | /users/int:id/add/                 | add comic book            | [Response](#add-comic-book)            |
+| PATCH  | /users/int:id/comics/int:comic_id/ | Update fields             | [Response](#update-fields)             |
+| DELETE | /users/comics/remove/int:comic_id/ | delete's comic book       | [Response](#deletes-comic-book)        |
 
 <br>
 <br>

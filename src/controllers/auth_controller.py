@@ -2,21 +2,11 @@ from flask import Blueprint, request, abort
 from init import db, bcrypt
 from datetime import timedelta
 from models.user import User, UserSchema
-from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import create_access_token, get_jwt_identity
-from  models.comic import Comic, ComicSchema
+
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-# SHOWS ALL USERS
-@auth_bp.route('/users/<int:id>')
-@jwt_required()
-def get_users(id):
-    authorize()
-    stmt = db.select(User)
-    users = db.session.scalars(stmt)
-    return UserSchema(many=True, exclude=['password']).dump(users)  
-  
 # REGISTER NEW USER ACCOUNT
 @auth_bp.route('/register/', methods=['POST'])
 def auth_register():
@@ -42,7 +32,7 @@ def auth_register():
 # LOGIN USER ACCOUNT
 @auth_bp.route('/login/', methods=['POST'])
 def auth_login():
-    
+    #  query email to make sure email is not in use
     stmt = db.select(User).filter_by(email=request.json['email'])
     user = db.session.scalar(stmt)
     

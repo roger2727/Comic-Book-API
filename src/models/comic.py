@@ -19,6 +19,8 @@ class Comic(db.Model):
 
 
 class ComicSchema(ma.Schema):
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    user = fields.Nested('UserSchema', only=['first_name','last_name', 'email'])
     #  NEST REVIEW FIELDS
     review = fields.List(fields.Nested('ReviewSchema', exclude=['comic']))
     #  VALADATES TITLE 
@@ -26,8 +28,9 @@ class ComicSchema(ma.Schema):
         Length(min=2, error='Title must be at least 2 characters long')
     )
 
-    
+
     class Meta:
         # FIELDS TO DISPLAY
-        fields = ('id', 'title','author', 'comic_value',  'review')
+        # !!!!!!!!!!!!!!!!!user
+        fields = ('id', 'title','author', 'comic_value',  'review',"user")
         ordered = True

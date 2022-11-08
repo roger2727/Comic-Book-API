@@ -10,22 +10,25 @@ from sqlalchemy.sql import func, select
 import random
 from models.user import User
 
-comics_bp = Blueprint('comics', __name__, url_prefix='/comics')
+comics_bp = Blueprint('comics', __name__, url_prefix='/users')
 
 # GETS ALL COMIC BOOKS FROM ALL USERS
 @comics_bp.route('/')
 @jwt_required()
 def get_all_comics():
+    
+    # selects all comics order by title
     stmt = db.select(Comic).order_by(Comic.title.desc())
     comics = db.session.scalars(stmt)
     return ComicSchema(many=True).dump(comics)
 
 # GETS ALL COMIC BOOKS FROM USER ACCOUNT
-@comics_bp.route('/<int:id>/')
+@comics_bp.route('/<int:id>/comics/')
 @jwt_required()
 def get_user_comics(id):
     # CHECKS CORRECT USER ACCOUNT
     check_user(id)
+    # query comic and filter_by user_id
     stmto = db.select(Comic).filter_by(user_id=id)
     comics = db.session.scalars(stmto)
 
@@ -47,7 +50,7 @@ def search_by_id(comic_id):
         return ComicSchema().dump(comic)
 
 # DELETE COMIC BOOK BY ID
-@comics_bp.route('/remove/<int:id>/', methods=['DELETE'])
+@comics_bp.route('comics/remove/<int:id>/', methods=['DELETE'])
 @jwt_required()
 def delete_one_comic(id):
     user_id = get_jwt_identity()  
@@ -62,7 +65,7 @@ def delete_one_comic(id):
         return {'error': f'comicbook not found with the id {id}'}, 404
 
 # UPDATE COMIC BOOK
-@comics_bp.route('/update/<int:id>/', methods=['PUT', 'PATCH'])
+@comics_bp.route('/comics/<int:id>/update/', methods=['PUT', 'PATCH'])
 @jwt_required()
 def update_one_comic(id):
     user_id = get_jwt_identity()  
@@ -107,7 +110,7 @@ def create_comic(id):
         
 
 # GETS TOTAL NUMBER OF COMICBOOKS AND THE TOTAL VALUE   
-@comics_bp.route('/<int:id>/total/')
+@comics_bp.route('/<int:id>/comics/total/')
 @jwt_required()
 def get_user_total(id):
     
@@ -129,7 +132,7 @@ def get_user_total(id):
  
 
 # GETS A RANDOM COMIC BOOK  
-@comics_bp.route('/<int:id>/random/')
+@comics_bp.route('/<int:id>/comics/random/')
 @jwt_required()
 def get_random_comic(id):
     

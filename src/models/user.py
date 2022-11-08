@@ -20,7 +20,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     # GETS COMIC AND REVIEW FIELDS
     comics = fields.List(fields.Nested('ComicSchema', exclude=['user']))
-    review = fields.List(fields.Nested('ReviewSchema', exclude=['user']))
+    # review = fields.List(fields.Nested('ReviewSchema', exclude=['user']))
     
      #  password
      
@@ -30,11 +30,7 @@ class UserSchema(ma.Schema):
     )
      
      
-    # password = fields.String(required=True,validate=
-    #     [Length(min=6, max=20)], error='password must be at least 6 characters long'),
-    #     Regexp('^[a-zA-Z0-9]+$', error='Only letters and numbers are allowed')
-
     class Meta:
         # FIELDS TO DISPLAY
-        fields = ('id','user' ,'first_name','last_name', 'email', 'password', 'is_admin')
+        fields = ('id','user','first_name','last_name','email', 'password', 'is_admin')
         ordered = True

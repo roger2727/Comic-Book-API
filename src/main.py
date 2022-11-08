@@ -1,5 +1,5 @@
 from flask import Flask
-from init import db, ma, bcrypt, jwt
+from init import db, ma, bcrypt, jwt 
 from controllers.comic_controller import comics_bp
 from controllers.auth_controller import auth_bp
 from controllers.cli_controller import db_commands
