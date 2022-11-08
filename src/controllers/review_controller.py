@@ -17,7 +17,9 @@ review_bp = Blueprint('review', __name__, url_prefix='/comics/review')
 @review_bp.route('/all/<int:id>')
 @jwt_required()
 def get_all_reviews(id):
+    # CHECKS CORRECT USER
     check_user(id)
+    # QUERY ALL REVIEWD FILTERS BY ID
     stmt = db.select(Review).order_by(Review.date.desc()).filter_by(user_id=id)
     reviews = db.session.scalars(stmt)
     return ReviewSchema(many=True).dump(reviews)
@@ -27,6 +29,7 @@ def get_all_reviews(id):
 @jwt_required()
 def search_by_id(id):
     user_id = get_jwt_identity()  
+    # QUERY REVIEWS BY RERVIEW ID FILTERD BY USER ID
     stmt = db.select(Review).filter_by(id=id).filter_by(user_id=user_id)
     comic = db.session.scalar(stmt)
     
@@ -65,6 +68,7 @@ def create_review(comic_id):
 @jwt_required()
 def update_review(id):
     user_id = get_jwt_identity()  
+    # SELECTS REVIEW FROM REVIEW ID AND FILTERS FROM USER ID
     stmt = db.select(Review).filter_by(id=id).filter_by(user_id=user_id)
     review = db.session.scalar(stmt)
     if review:
@@ -85,6 +89,7 @@ def update_review(id):
 @jwt_required()
 def delete_one_review(id):
     user_id = get_jwt_identity()  
+    # REMOVE REVIEW BY SELECTING REVIEW ID FILTERS ONLY USER USERS REVIEW
     stmt = db.select(Review).filter_by(id=id).filter_by(user_id=user_id)
     review = db.session.scalar(stmt)
     if review and user_id:
@@ -94,17 +99,4 @@ def delete_one_review(id):
     else:
         return {'error': f'review not found with the id {id}'}, 404 
  
-    
-def search_by_id(id):
-    user_id = get_jwt_identity()  
-    stmt = db.select(Review).filter_by(id=id).filter_by(user_id=user_id)
-    comic = db.session.scalar(stmt)
-    
-    if not comic or not user_id:
-        return {'error': f'Review  not found with the id: {id}' },404
-   
-    else:
-        
-        return ReviewSchema().dump(comic)
-
 

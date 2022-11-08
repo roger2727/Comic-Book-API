@@ -113,10 +113,11 @@ def create_comic(id):
 @comics_bp.route('/<int:id>/comics/total/')
 @jwt_required()
 def get_user_total(id):
-    
+    # uses func to count how may comic id's in users libary
     user_id = get_jwt_identity()  
     stmt = db.session.query(func.count(Comic.id)).filter_by(user_id=id)
     comicso = db.session.scalar(stmt)
+    # uses fun sum to add up all the values from comic values
     stmt = db.session.query(func.sum(Comic.comic_value)).filter_by(user_id=id)
     comics = db.session.scalar(stmt)
     
@@ -125,18 +126,17 @@ def get_user_total(id):
             'totalComics': comicso,
             'totalValue': round(comics, 2)
         }
-        # return {'message': f'You have a total of {comicso} comicbooks, the total value comes to:  ${comics} |  {type(user_id)}  | {type(id)} '}
+       
     else:
-        return {'error': f'Invalid user'}
+        return {'error': f'Invalid user'}, 400
      
- 
-
 # GETS A RANDOM COMIC BOOK  
 @comics_bp.route('/<int:id>/comics/random/')
 @jwt_required()
 def get_random_comic(id):
-    
+    # CHECKS CORRECT USER
     check_user(id)
+     # USES FUN RANDOM TO SELECT A RANDOM COMIC ID
     stmt = db.select(Comic).order_by(func.random()).limit(1).filter_by(user_id=id)
     comics = db.session.scalars(stmt)
         

@@ -9,28 +9,27 @@
 
 Link to Github repo [_click here_](http).
 
-link to Trello Implementation plan [_click here_](http).
-<br>
+link to Trello Implementation plan [_click here_](https://trello.com/invite/b/kgYlNK2u/ATTI23e01016826faea78b7ed251a0eb5af36A99C357/comic-book-api-project).
 <br>
 
-## Table of Contents
+# Table of Contents
 
-- [General Info](#the-purpose-for-building-this-app)
+- [General Info](#the-purpose-for-building-this-api)
 - [Database Info](#database-system-used-for-this-project-and-why)
-- [ERD and Relations Info](#erd)
+- [ERD Relations & Models Info](#erd-relations--models-info)
 - [End Points](#api-endpoints)
 - [Implementation Plan](#implementation-plan)
-- [Tech Stack](#tech-stack)
+- [Tech Stack/ Dependencies](#tech-stack--dependencies)
 - [Reference](#reference)
 
 <br>
 
-# **The purpose for building this app**
+# **The purpose for building this API**
 
 <!-- R1 Identification of the problem you are trying to solve by building this particular app. -->
 <!-- R2 Why is it a problem that needs solving? -->
 
-I own a lot of comic books, and I can never remember what I have. I hate flicking through piles to see which ones I have because they get damaged, are messy, and can waste a lot of time. So if I had an app to store all my comic books , it will save a lot of time and prevent my comics from getting damaged. Also, sometimes I need help deciding which one to read because I could spend hrs deciding. The app will generate a random comic book which will solve this problem. As a collector of comic books, I always wonder how many comics i own and how much all my comics are worth, so if i had a app to store all this information it would help me keep track of my comic book investments.
+I own a lot of comic books, and I hate flicking through piles to see which ones I have because they get damaged, and it gets messy. Usually, by the time I have gone through the entire stack, I forget which one's I wanted to read. This process of deciding what to read can waste a lot of time, So if I had an app to store all my comic books and give me the option to pick a random comic book, it would save a lot of time and prevent my comics from getting damaged. As a collector of comic books, I always wonder how many comics I own and how much all my comics are worth, so if I had an app to store all this information, it would help me keep track of my comic book investments.
 
 <br>
 <br>
@@ -41,7 +40,7 @@ I own a lot of comic books, and I can never remember what I have. I hate flickin
 
 <!-- R3 Why have you chosen this database system. What are the drawbacks compared to others? -->
 
-For this project, I have chosen to use PostgreSQL.I have chosen Psql because it is an object-relational database management system (ORDBMS), .which means it has all the features of a Relational Database Management system and uses object-oriented management systems like inheritance, objects and classes. Another reason I have chosen Psql is that it has been Acid compliant since 2001, which means the database will guarantee validity even with power outages or errors etc. some of the drawbacks of using Psql is its slow performance if you are to compare it to Mysql. Another drawback if comparing Postgresql to Mysql because Postgresql is more advanced and has a lot more features, it requires a higher learning curve.
+For this project, I have chosen to use PostgreSQL.I have chosen Psql because it is an object-relational database management system (ORDBMS), .which means it has all the features of a Relational Database Management system and uses object-oriented management systems like inheritance, objects and classes. Another reason I have chosen Psql is that it has been Acid compliant since 2001, which means the database will guarantee validity even with power outages or errors. Some of the drawbacks of using Psql is its slow performance if you are to compare it to Mysql. Another drawback if comparing Postgresql to Mysql because Postgresql is more advanced and has a lot more features, it requires a higher learning curve.
 
 <br>
 <br>
@@ -53,7 +52,7 @@ For this project, I have chosen to use PostgreSQL.I have chosen Psql because it 
 
 <br>
 
-The main functionalities of a Relational object Database (Orm) are to map relational SQL objects, and you have foreign and primary keys to actual objects and code so you can more easily both read, view and respond in objects and also manipulate them so you can set properties and make changes. The ORM is great as you won't need to rely on special technics or learn a new query language to be productive with the data system. another benefit of using relational object mapping is that the models are dry because you only write the models once, which makes it faster and easier to update and maintain.another reason for Using a orm is that it helps prevent SQL injection attacks which could cause security risks.
+The main functionalities of a Relational object Database (Orm) are to map relational SQL objects. You have foreign and primary keys to actual objects and code, so you can read, view, and respond more easily to objects. And also manipulate them so you can set properties and make changes. The ORM is great as you won't need to rely on special technics or learn a new query language to be productive with the data system. Another benefit of relational object mapping is that the models are dry because you only write the models once, making it faster and easier to update and maintain. Another reason for Using an ORM is that it helps prevent SQL injection attacks which helps with security threats
 
 <br>
 
@@ -62,15 +61,19 @@ The main functionalities of a Relational object Database (Orm) are to map relati
 <br>
 <br>
 
-# **ERD**
+# **ERD Relations & Models Info**
 
 <!-- R6 An ERD for your app -->
 
 ![Example screenshot](/docs/erd.png)
+<br>
+<br>
 
 ## Database Realatships
 
-In the ERd above shows The users entity has a one to many relationship to the comics entity becuses the user can store multiple comic books and is linked by the forighn key user_id, and is also linked to the reviews table .the user has mant reviews so it is a one to many. the comics entity has a one to one relationship with the reviews entity becuse each comic book has one personal review by the user. they are linked by the forighn key comic_id in the reviews entity.
+The ERD above shows The user's entity has a one-to-many relationship to the comics entity because the user can store multiple comic books and is linked by the foreign key user_id, and is also linked to the reviews table. The user has many reviews, so it is a one-to-many. The comics entity has a one-to-one relationship with the reviews entity because each comic book has one personal review by the user. They are linked by the foreign key comic_id in the reviews entity.
+<br>
+<br>
 
 ## methods/behaviour of the models
 
@@ -88,6 +91,11 @@ In the ERd above shows The users entity has a one to many relationship to the co
     password = db.Column(db.String,nullable=False)
     # is_admin is a boolean
     is_admin = db.Column(db.Boolean, default=False)
+
+    # TABLE RELATIONS
+    # this is were comic points to the user and review points to user table
+    comics = db.relationship('Comic', back_populates='user',cascade='all, delete')
+    review= db.relationship('Review', back_populates='user', cascade='all, delete')
 ```
 
 <br>
@@ -105,6 +113,11 @@ In the ERd above shows The users entity has a one to many relationship to the co
     comic_value = db.Column(db.Float)
     # FOREIGN_KEY user_id us used to link to users and must not be empty
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    # TABLE RELATIONS
+    # this is were user point to comics and review points to the comic table
+    user = db.relationship('User', back_populates='comics', cascade='all, delete')
+    review = db.relationship('Review', back_populates='comic', cascade='all, delete')
 ```
 
 ```python
@@ -121,6 +134,11 @@ In the ERd above shows The users entity has a one to many relationship to the co
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     # comic_d is a foreignkey that links to comics id
     comic_id = db.Column(db.Integer, db.ForeignKey('comics.id'), nullable=False,unique=True)
+
+    # TABLE RELATIONS
+    # this is were user point to review and comic points to the review table
+    user = db.relationship("User", back_populates="review" )
+    comic = db.relationship("Comic", back_populates="review")
 
 ```
 
@@ -212,7 +230,7 @@ In the ERd above shows The users entity has a one to many relationship to the co
 
 | HTTP   | Endpoints                          | Action                    | Respose                                |
 | ------ | ---------------------------------- | ------------------------- | -------------------------------------- |
-| GET    | /comics/                           | shows all comic books     | [Response](#shows-all-comic-books)     |
+| GET    | /users/comics/                     | shows all comic books     | [Response](#shows-all-comic-books)     |
 | GET    | /users/int:id/comics               | shows user's comic books  | [Response](#register-a-new-user)       |
 | GET    | /users/comics/search/int:comic_id  | get comic by comic id     | [Response](#get-comic-by-comic-id)     |
 | GET    | /users/int:id/comics/total/        | get total value of comics | [Response](#get-total-value-of-comics) |
@@ -475,7 +493,7 @@ In the ERd above shows The users entity has a one to many relationship to the co
 
 <!-- R10 Describe the way tasks are allocated and tracked in your project -->
 
-Before developing this application, I began with the planning process by creating a new Trello board and adding a card for every task with checklists required to finish each task. Once I have made all the cards, I go back through them and decide what has to be completed first and what has more priority. Then I start adding time frames and dates to the cards. Doing this allows me to look at the project and see how much time I can spend on specific tasks and helps me keep track of the overall progress of the development of the application
+Before developing this application, I began with the planning process by creating a new Trello board and adding a card for every task with checklists required to finish each task. Once I have made all the cards, I will go through and highlight what is code and what is documentation, and then I will decide what has to be completed first and what has more priority. After that is done, I start adding time frames and dates to the cards. Doing this allows me to keep track of the overall progress of the development of the application.
 
 <br>
 <br>
@@ -483,6 +501,7 @@ Before developing this application, I began with the planning process by creatin
 link to Trello Implementation plan [_click here_](https://trello.com/invite/b/kgYlNK2u/ATTI23e01016826faea78b7ed251a0eb5af36A99C357/comic-book-api-project).
 
 ![Example screenshot](/docs/trello.png)
+![Example screenshot](/docs/trello_check.png)
 
 <br>
 <br>
@@ -507,23 +526,43 @@ nbvcnvcnvnnnbcvnncvbnnb
 <br>
 <br>
 
-# **Tech Stack**
+# Tech Stack & Dependencies
 
-- **Python** - a computer programming language often used to build websites and software, automate tasks, and conduct data analysis. Python is a general-purpose language, meaning it can be used to create a variety of different programs and isn’t specialized for any specific problems
+- **Python**
 
-- **PostgreSQL** - open source object-relational database system that uses the SQL language combined with many features that safely store and scale the most complicated data workloads
+  a computer programming language often used to build websites and software, automate tasks, and conduct data analysis. Python is a general-purpose language, meaning it can be used to create a variety of different programs and isn’t specialized for any specific problems. for more information visit [_https://www.python.org/_](https://www.python.org/).
 
-- **Flask** - Flask is a web framework, which provides you with tools, libraries and technologies that allow you to build a web application.
+- **PostgreSQL**
 
-- **SQlAlchemy** - SQLAlchemy is a popular SQL toolkit and Object Relational Mapper. It is written in Python and gives full power and flexibility of SQL to an application developer
+  open source object-relational database system that uses the SQL language combined with many features that safely store and scale the most complicated data workloads. for more information visit [_https://www.postgresql.org/_](https://www.postgresql.org/).
 
-- **Marshmallow** - Marshmallow is a Python library that converts complex data types to and from Python data types. It is a powerful tool for both validating and converting data.
+- **Flask**
 
-- **Psycopg2** - Psycopg2 is a PostgreSQL database driver, it is used to perform operations on PostgreSQL using python
+  Flask is a web framework, which provides you with tools, libraries and technologies that allow you to build a web application.for more information visit [_https://palletsprojects.com/p/flask/_](https://palletsprojects.com/p/flask/).
 
-- **JWT** - or JSON Web Token, is an open standard used to share security information between two parties
+- **SQlAlchemy**
 
-- **Bcrypt** - BCrypt Algorithm is used to hash and salt passwords securely
+  SQLAlchemy is a popular SQL toolkit and Object Relational Mapper. It is written in Python and gives full power and flexibility of SQL to an application developer.for more information visit [_https://www.sqlalchemy.org/_](https://www.sqlalchemy.org/).
+
+- **Marshmallow**
+
+  Marshmallow is a Python library that converts complex data types to and from Python data types. It is a powerful tool for both validating and converting data.for more information visit [_https://marshmallow.readthedocs.io/en/stable/_](https://marshmallow.readthedocs.io/en/stable/).
+
+- **Psycopg2**
+
+  Psycopg2 is a PostgreSQL database driver, it is used to perform operations on PostgreSQL using python.for more information visit [_https://www.psycopg.org/docs/_](https://www.psycopg.org/docs/)
+
+- **JWT**
+
+  or JSON Web Token, is an open standard used to share security information between two parties.for more information visit [_https://jwt.io/_](https://jwt.io/)
+
+- **Flask-Bcrypt**
+
+  Flask-Bcrypt Algorithm is used to hash and salt passwords securely.for more information visit [_https://flask-bcrypt.readthedocs.io/en/1.0.1/_](https://flask-bcrypt.readthedocs.io/en/1.0.1/)
+
+- **python-dotenv**
+
+  python-dotenv allows you load the configuration from a .env file which helps in the development of apps following the 12-factor principles .for more information visit [https://pypi.org/project/python-dotenv/](https://pypi.org/project/python-dotenv/)
 
 <br>
 

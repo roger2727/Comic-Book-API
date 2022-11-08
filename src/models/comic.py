@@ -1,6 +1,6 @@
 from init import db, ma
 from marshmallow import fields
-from marshmallow.validate import Length, And, Regexp
+from marshmallow.validate import Length
 
 
 
@@ -19,7 +19,6 @@ class Comic(db.Model):
 
 
 class ComicSchema(ma.Schema):
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     user = fields.Nested('UserSchema', only=['first_name','last_name', 'email'])
     #  NEST REVIEW FIELDS
     review = fields.List(fields.Nested('ReviewSchema', exclude=['comic']))
@@ -31,6 +30,5 @@ class ComicSchema(ma.Schema):
 
     class Meta:
         # FIELDS TO DISPLAY
-        # !!!!!!!!!!!!!!!!!user
         fields = ('id', 'title','author', 'comic_value',  'review',"user")
         ordered = True
