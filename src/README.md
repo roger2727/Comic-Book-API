@@ -20,7 +20,6 @@ link to Trello Implementation plan [_click here_](https://trello.com/invite/b/kg
 - [End Points](#api-endpoints)
 - [Implementation Plan](#implementation-plan)
 - [Tech Stack/ Dependencies](#tech-stack--dependencies)
-- [Reference](#reference)
 
 <br>
 
@@ -52,9 +51,42 @@ For this project, I have chosen to use PostgreSQL.I have chosen Psql because it 
 
 <br>
 
-The main functionalities of a Relational object Database (Orm) are to map relational SQL objects. You have foreign and primary keys to actual objects and code, so you can read, view, and respond more easily to objects. And also manipulate them so you can set properties and make changes. The ORM is great as you won't need to rely on special technics or learn a new query language to be productive with the data system. Another benefit of relational object mapping is that the models are dry because you only write the models once, making it faster and easier to update and maintain. Another reason for Using an ORM is that it helps prevent SQL injection attacks which helps with security threats
+## **functionalities of an ORM**
 
-<br>
+- The main functionalities of a Relational object Database (ORM) are to map relational SQL objects object oriented programming (OOP) .When working with a database using OOP languages, operations are performed like creating, reading, updating, and deleting data from a database.
+
+**example**: Using OOP to create a table
+
+```python
+# creates class
+class Comic(db.Model):
+  # table name
+  __tablename__ = 'comics'
+  # feilds for table
+  id = db.Column(db.Integer, primary_key=True)
+  title = db.Column(db.String(100),nullable=False)
+  author = db.Column(db.String(100))
+  comic_value = db.Column(db.Float)
+  user_id = db.Column(db.Integer,
+  db.ForeignKey('users.id'), nullable=False)
+```
+
+**example**: query using OOP
+
+```python
+  stmt = db.select(Comic).order_by(Comic.title.desc())
+  comics = db.session.scalars(stmt)
+  return ComicSchema(many=True).dump(comics)
+```
+
+## **benefits of an ORM**
+
+- Using an ORM helps prevent SQL injection attacks which helps with security threats
+- models are dry because you only write the models once, making it faster and easier to update and maintain.
+- ORM is great as you won't need to rely on special technics or learn a new query language to be productive with the data system
+- ORM is available in the language of your choice, and lets you use OOPs
+- most ORM have come with features , such as support for transactions, connection pooling, migrations, seeds, streams,
+  <br>
 
 <!-- R8 Describe your projects models in terms of the relationships they have with each other -->
 
@@ -228,16 +260,16 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
 
 <br>
 
-| HTTP   | Endpoints                          | Action                    | Respose                                |
-| ------ | ---------------------------------- | ------------------------- | -------------------------------------- |
-| GET    | /users/comics/                     | shows all comic books     | [Response](#shows-all-comic-books)     |
-| GET    | /users/int:id/comics               | shows user's comic books  | [Response](#register-a-new-user)       |
-| GET    | /users/comics/search/int:comic_id  | get comic by comic id     | [Response](#get-comic-by-comic-id)     |
-| GET    | /users/int:id/comics/total/        | get total value of comics | [Response](#get-total-value-of-comics) |
-| GET    | /users/int:id/comics/random/       | get random comic          | [Response](#get-random-comic)          |
-| POST   | /users/int:id/add/                 | add comic book            | [Response](#add-comic-book)            |
-| PATCH  | /users/int:id/comics/int:comic_id/ | Update fields             | [Response](#update-fields)             |
-| DELETE | /users/comics/remove/int:comic_id/ | delete's comic book       | [Response](#deletes-comic-book)        |
+| HTTP   | Endpoints                                | Action                    | Respose                                |
+| ------ | ---------------------------------------- | ------------------------- | -------------------------------------- |
+| GET    | /users/comics/                           | shows all comic books     | [Response](#shows-all-comic-books)     |
+| GET    | /users/int:id/comics                     | shows user's comic books  | [Response](#register-a-new-user)       |
+| GET    | /users/int:id/comics/search/int:comic_id | get comic by comic id     | [Response](#get-comic-by-comic-id)     |
+| GET    | /users/int:id/comics/total/              | get total value of comics | [Response](#get-total-value-of-comics) |
+| GET    | /users/int:id/comics/random/             | get random comic          | [Response](#get-random-comic)          |
+| POST   | /users/int:id/add/                       | add comic book            | [Response](#add-comic-book)            |
+| PATCH  | /users/int:id/comics/int:comic_id/       | Update fields             | [Response](#update-fields)             |
+| DELETE | /users/comics/remove/int:comic_id/       | delete's comic book       | [Response](#deletes-comic-book)        |
 
 <br>
 <br>
@@ -356,9 +388,13 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
 ### Add comic book
 
 ```json
-// IF CORRECT FIELDS
+// IF CORRECT FIELDS ADDED AND CORRECT USER
 {
   "message": "Comicbook Batman vol 2 successfully added to libary"
+}
+// IF CORRECT FIELDS ADDED AND INCORRECT USER
+{
+    "error": "You are not authorized to perform this action"
 }
 // IF TITLE LESS THEN 2 CARACHTERS
 {
@@ -371,6 +407,15 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
 // ID TITLE ALREADY EXISTS
 {
     "error": "Comicbook Batman vol 2 already exists for user"
+}
+
+//IF NO VALUE ADDED
+{
+    "error": "The field 'comic_value' is required."
+}
+// IF NO AUTHOR ADDED
+{
+    "error": "The field 'author' is required."
 }
 ```
 
@@ -404,6 +449,10 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
 //  IF COMIC ID MATCHED AND CORRECT USER
 {
   "message": "Comic book'BATMAN VOL2  deleted successfully"
+}
+// IF INCORRECT USER
+{
+    "error": "You are not authorized to perform this action"
 }
 //  COMIC BOOK ID NOT FOUND
 {
@@ -456,13 +505,17 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
     "title": "superman vol 1"
   },
   "id": 1,
-  "review": "fucking",
+  "review": "CRAP",
   "rating": 1,
   "date": "2022-11-06"
 }
 // IF NO MATCH WITH ID
 {
     "error": "Review  not found with the id: 6"
+}
+// IF RATING IN NOT BETWEEN 1 AND 10
+{
+    "error": "rating needs to between 1 and 10 "
 }
 ```
 
@@ -550,24 +603,39 @@ nbvcnvcnvnnnbcvnncvbnnb
 
 - **Psycopg2**
 
-  Psycopg2 is a PostgreSQL database driver, it is used to perform operations on PostgreSQL using python.for more information visit [_https://www.psycopg.org/docs/_](https://www.psycopg.org/docs/)
+  - Psycopg2 is a PostgreSQL database driver, it is used to perform operations on PostgreSQL using python, it is designed for multi-threaded applications. SQL queries are executed with psycopg2 with the help of the execute() method. It is used to Execute a database operation query or command.
+  - for more info visit [_https://www.psycopg.org/docs/_](https://www.psycopg.org/docs/)
 
 - **JWT**
 
-  or JSON Web Token, is an open standard used to share security information between two parties.for more information visit [_https://jwt.io/_](https://jwt.io/)
+  or JSON Web Token, is an open standard used to share security information between two parties.
+
+  **features JWT**
+
+  - Because the JWT is comprised of encoded JavaScript Object Notation (JSON) objects, it is compact enough to be sent through a URL query, a POST parameter, or an HTTP header.
+
+  - The JWT can contain all the required information about the user and therefore avoids querying the database more than once
+
+  - The JWT can be digitally signed with HMAC algorithm or RSA algorithm, using a public/private key pair
+
+  - for more information visit [_https://jwt.io/_](https://jwt.io/)
 
 - **Flask-Bcrypt**
 
-  Flask-Bcrypt Algorithm is used to hash and salt passwords securely.for more information visit [_https://flask-bcrypt.readthedocs.io/en/1.0.1/_](https://flask-bcrypt.readthedocs.io/en/1.0.1/)
+  Flask-Bcrypt Algorithm is used to hash and salt passwords securely.
+
+  **features of Bcrypt**
+
+  - Bcrypt is a one-way hash function to obfuscate the password such that it is not stored in plain text.
+
+  - The hashing function is executed many times which is known as key stretching.
+
+  - BCrypt stores the number of iterations as part of the hash
+
+  - for more information visit [_https://flask-bcrypt.readthedocs.io/en/1.0.1/_](https://flask-bcrypt.readthedocs.io/en/1.0.1/)
 
 - **python-dotenv**
 
   python-dotenv allows you load the configuration from a .env file which helps in the development of apps following the 12-factor principles .for more information visit [https://pypi.org/project/python-dotenv/](https://pypi.org/project/python-dotenv/)
 
 <br>
-
-# **Reference**
-
-<br>
-
-Refrence for PEP8 style guidelines

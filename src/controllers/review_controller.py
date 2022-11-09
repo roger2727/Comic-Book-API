@@ -1,5 +1,5 @@
 
-from flask import Blueprint, request
+from flask import Blueprint, request,abort
 from init import db
 from datetime import date
 from models.comic import Comic
@@ -56,12 +56,22 @@ def create_review(comic_id):
             comic = comic,
             date = date.today()
         )
-        db.session.add(user_review)
-        db.session.commit()
-    
-        return ReviewSchema().dump(user_review), 201    
+        # check user rating is between 1 and 10
+        if user_review.rating <= 10 and user_review.rating >= 1:
+            db.session.add(user_review)
+            db.session.commit()
+        
+            return ReviewSchema().dump(user_review), 201  
+        else:
+            return {'error': f'rating needs to between 1 and 10 '}, 409  
     except Exception:   
         return {'error': f'User can not have multiple reviews on one comicbook, please edit the original review .'}, 409
+        
+    
+        
+        
+    
+        
     
 # UPDATE REVIEW FROM REVIEW ID
 @review_bp.route('/update/<int:id>/', methods=['PUT', 'PATCH'])

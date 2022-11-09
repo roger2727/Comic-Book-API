@@ -52,18 +52,61 @@ def seed_db():
     
 # COMICBOOKS DATA
     comics = [
+        # admin comics
         Comic(
             title = 'superman vol 1',
-            author = 'super man duide',
+            author = 'Jerry Siegel',
             comic_value = 97.50,
             user = users[0]
         ),
         Comic(
             title = 'superman vol 2',
-            author = 'super man duide',
+            author = 'Jerry Siegel ',
+            comic_value = 100.00, 
+            user = users[0]
+        ),
+        Comic(
+            title = 'superman vol 3',
+            author = 'Jerry Siegel ',
+            comic_value = 30.00, 
+            user = users[0]),
+        
+        # mitchell roger's comic
+        Comic(
+            title = 'Batman vol 2',
+            author = 'Bob Kane',
+            comic_value = 20.00, 
+            user = users[1]
+        ),
+        Comic(
+            title = 'Batman vol 3',
+            author = 'Bob Kane',
+            comic_value = 10.00, 
+            user = users[1]),
+        Comic(
+            title = 'Batman vol 5',
+            author = 'Bob Kane',
             comic_value = 100.00, 
             user = users[1]
-        )]
+        ),
+        # Charles Xavier's comics
+        Comic(
+            title = 'Xmen vol 1',
+            author = 'Stan Lee',
+            comic_value = 100.00, 
+            user = users[2]),
+        Comic(
+            title = 'Xmen vol 12',
+            author = 'Stan Lee',
+            comic_value = 100.00, 
+            user = users[2]
+        ),
+        Comic(
+            title = 'Xmen vol 9',
+            author = 'Stan Lee',
+            comic_value = 100.00, 
+            user = users[2])
+        ]
 
     db.session.add_all(comics)
     db.session.commit()
@@ -71,17 +114,17 @@ def seed_db():
 # USER REVIEWS DATA
     user_review = [
         Review(
-            review = 'fucking',
-            rating = 1,
-            user = users[1],
-            comic= comics[0],
+            review = 'a great read one of my favourite comics',
+            rating = 9,
+            user = users[0],
+            comic= comics[3],
             date = date.today()
         ),
         Review(
-            review = 'poo',
+            review = 'was boring not a fan',
             rating = 1,
-            user = users[0],
-            comic= comics[1],
+            user = users[1],
+            comic= comics[6],
             date = date.today()
         
          )

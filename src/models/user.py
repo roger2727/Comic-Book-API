@@ -1,7 +1,7 @@
 
 from init import db, ma
 from marshmallow import fields
-from marshmallow.validate import Length, And, Regexp
+from marshmallow.validate import Length
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -22,8 +22,8 @@ class UserSchema(ma.Schema):
     comics = fields.List(fields.Nested('ComicSchema', exclude=['user']))
     # review = fields.List(fields.Nested('ReviewSchema', exclude=['user']))
     
-     #  password
-     
+    
+    #   PASSWORD BIGGER THAN 8 CHARACTERS
     password = fields.String(required=True, validate=
         Length(min=8, error='Password must be at least 8 characters long'),
         

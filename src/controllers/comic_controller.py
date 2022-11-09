@@ -13,10 +13,9 @@ from models.user import User
 comics_bp = Blueprint('comics', __name__, url_prefix='/users')
 
 # GETS ALL COMIC BOOKS FROM ALL USERS
-@comics_bp.route('/')
+@comics_bp.route('/comics/')
 @jwt_required()
 def get_all_comics():
-    
     # selects all comics order by title
     stmt = db.select(Comic).order_by(Comic.title.desc())
     comics = db.session.scalars(stmt)
@@ -35,14 +34,15 @@ def get_user_comics(id):
     return ComicSchema(many=True).dump(comics)
   
 # GETS COMIC BOOK BY COMICBOOK ID
-@comics_bp.route('/search/<int:comic_id>/')
+@comics_bp.route('/<int:id>/search/<int:comic_id>/')
 @jwt_required()
-def search_by_id(comic_id):
-    user_id = get_jwt_identity()  
-    stmt = db.select(Comic).filter_by(id=comic_id).filter_by(user_id=user_id)
+def search_by_id(comic_id,id):
+    # CHECKS CORRECT USER ACCOUNT
+    check_user(id)
+    stmt = db.select(Comic).filter_by(id=comic_id).filter_by(user_id=id)
     comic = db.session.scalar(stmt)
     
-    if not comic or not user_id:
+    if not comic:
         return {'error': f'Comicbook not found with the id: {comic_id}' },404
    
     else:
@@ -50,14 +50,14 @@ def search_by_id(comic_id):
         return ComicSchema().dump(comic)
 
 # DELETE COMIC BOOK BY ID
-@comics_bp.route('comics/remove/<int:id>/', methods=['DELETE'])
+@comics_bp.route('<int:id>/comics/remove/<int:comic_id>/', methods=['DELETE'])
 @jwt_required()
-def delete_one_comic(id):
-    user_id = get_jwt_identity()  
-    stmt = db.select(Comic).filter_by(id=id).filter_by(user_id=user_id)
+def delete_one_comic(comic_id,id):
+    check_user(id)
+    stmt = db.select(Comic).filter_by(id=comic_id).filter_by(user_id=id)
     comic = db.session.scalar(stmt)
-    # CHECKS COMICBOK ID EXISTS & CHECKS CORRECT USER
-    if comic and user_id:
+    # CHECKS COMICBOK ID EXISTS 
+    if comic:
         db.session.delete(comic)
         db.session.commit()
         return {'message': f"Comic book'{comic.title}  deleted successfully"}
@@ -81,13 +81,11 @@ def update_one_comic(id):
         return {'error': f'Comicbook not found with the id: {id}'}, 404
 
 # ADD NEW COMICBOOK 
-@comics_bp.route('<int:id>/add', methods=['POST'])
-
+@comics_bp.route('<int:id>/comics/add', methods=['POST'])
 @jwt_required()
 def create_comic(id):
     # CHECKS CORRECT USER
     check_user(id)
-    
     data = ComicSchema().load(request.json)
     query = db.select(Comic.title).filter_by(user_id=id)
     stmt = db.session.scalars(query).all()
@@ -128,7 +126,7 @@ def get_user_total(id):
         }
        
     else:
-        return {'error': f'Invalid user'}, 400
+        return abort(401)
      
 # GETS A RANDOM COMIC BOOK  
 @comics_bp.route('/<int:id>/comics/random/')

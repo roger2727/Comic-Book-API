@@ -1,12 +1,13 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import Length, And, Regexp
 
 class Review(db.Model):
     __tablename__ = 'reviews'
     # REVIEW FIELDS
     id = db.Column(db.Integer, primary_key=True)
     review = db.Column(db.String(200))
-    rating = db.Column(db.Integer)
+    rating = db.Column(db.Integer,nullable=False)
     date = db.Column(db.Date)
     # FOREIGN_KEYS
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -19,6 +20,10 @@ class Review(db.Model):
 class ReviewSchema(ma.Schema):
     # NEST COMIC FIELDS
     comic = fields.Nested('ComicSchema',only=['title'])
+    
+  #
+     
+
 
     
 

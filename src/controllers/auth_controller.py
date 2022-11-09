@@ -56,8 +56,7 @@ def check_user(id):
     user_id = get_jwt_identity()  
     stmt = db.select(User).filter_by(id=user_id)
     user = db.session.scalar(stmt)
-    if id != int(user_id) and not user.is_admin:
-        print(user.is_admin)
+    if id != int(user_id):
         abort(401)
    
    
