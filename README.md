@@ -4,7 +4,7 @@
 
 ![Example screenshot](/docs/banner.png)
 
-Link to Github repo [_click here_](http).
+Link to Github repo [_click here_](https://github.com/roger2727/T2A2---API-Webserver-Project).
 
 link to Trello Implementation plan [_click here_](https://trello.com/invite/b/kgYlNK2u/ATTI23e01016826faea78b7ed251a0eb5af36A99C357/comic-book-api-project).
 <br>
