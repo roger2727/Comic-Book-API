@@ -1,7 +1,4 @@
-<br>
-<br>
-
-# **Comic Book Managment System API**
+# **Comic Book Management System API**
 
 ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white)![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
@@ -560,24 +557,6 @@ link to Trello Implementation plan [_click here_](https://trello.com/invite/b/kg
 <br>
 
 <!-- R7 Detail any third party services that your app will use -->
-
-## **How to run**
-
-<br>
-
-nbvcnvcnvnnnbcvnncvbnnb
-
-<br>
-
-1. Create a Virtual Environment
-   - type in the terminal `python3 -m venv venv`
-   - type in the terminal `. venv/bin/activate`
-   - Installation instructions: https://docs.python.org/3/library/venv.html
-2. In your terminal, go to the directory containing the application
-3. To execute run.sh file by entering: `./run.sh`
-
-<br>
-<br>
 
 # Tech Stack & Dependencies
 
