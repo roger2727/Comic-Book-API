@@ -46,9 +46,7 @@ For this project, I have chosen to use PostgreSQL.I have chosen Psql because it 
 
 # **functionalities and benefits of an ORM**
 
-<br>
-
-## **functionalities of an ORM**
+**functionalities of an ORM**
 
 - The main functionalities of a Relational object Database (ORM) are to map relational SQL objects object oriented programming (OOP) .When working with a database using OOP languages, operations are performed like creating, reading, updating, and deleting data from a database.
 
@@ -76,7 +74,7 @@ class Comic(db.Model):
   return ComicSchema(many=True).dump(comics)
 ```
 
-## **benefits of an ORM**
+**benefits of an ORM**
 
 - Using an ORM helps prevent SQL injection attacks which helps with security threats
 - models are dry because you only write the models once, making it faster and easier to update and maintain.
@@ -171,11 +169,14 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
 
 ```
 
+<br>
+<br>
+
 # API Endpoints
 
 <br>
 
-## Table of Contents
+Table of Contents
 
 - [User Endpoints](#user-end-points)
 - [Comic Book Endpoints](#comic-book-endpoints)

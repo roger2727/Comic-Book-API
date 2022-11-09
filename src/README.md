@@ -171,11 +171,14 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
 
 ```
 
+<br>
+<br>
+
 # API Endpoints
 
 <br>
 
-## Table of Contents
+**Table of Contents**
 
 - [User Endpoints](#user-end-points)
 - [Comic Book Endpoints](#comic-book-endpoints)
