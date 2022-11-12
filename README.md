@@ -25,7 +25,7 @@ link to Trello Implementation plan [_click here_](https://trello.com/invite/b/kg
 <!-- R1 Identification of the problem you are trying to solve by building this particular app. -->
 <!-- R2 Why is it a problem that needs solving? -->
 
-I own a lot of comic books, and I hate flicking through piles to see which ones I have because they get damaged, and it gets messy. Usually, by the time I have gone through the entire stack, I forget which one's I wanted to read. This process of deciding what to read can waste a lot of time, So if I had an app to store all my comic books and give me the option to pick a random comic book, it would save a lot of time and prevent my comics from getting damaged. As a collector of comic books, I always wonder how many comics I own and how much all my comics are worth, so if I had an app to store all this information, it would help me keep track of my comic book investments.
+I own a lot of comic books, and I hate flicking through piles to see which ones I have because they get damaged, and it gets messy. Usually, by the time I have gone through the entire stack, I forget which one's I wanted to read. This process of deciding what to read can waste a lot of time, So if I had an app to store all my comic books and give me the option to pick a random comic book, it would save a lot of time and prevent my comics from getting damaged. i want a place were i can store a review on a comic book and give it a rating to give me more information when browsing through.This will help me to keep track of the the comic books that i enjoyed reading the most. As a collector of comic books, I always wonder how many comics I own and how much all my comics are worth, so if I had an app to store all this information, it would help me keep track of my comic book investments.
 
 <br>
 <br>
@@ -36,7 +36,11 @@ I own a lot of comic books, and I hate flicking through piles to see which ones 
 
 <!-- R3 Why have you chosen this database system. What are the drawbacks compared to others? -->
 
-For this project, I have chosen to use PostgreSQL.I have chosen Psql because it is an object-relational database management system (ORDBMS), .which means it has all the features of a Relational Database Management system and uses object-oriented management systems like inheritance, objects and classes. Another reason I have chosen Psql is that it has been Acid compliant since 2001, which means the database will guarantee validity even with power outages or errors. Some of the drawbacks of using Psql is its slow performance if you are to compare it to Mysql. Another drawback if comparing Postgresql to Mysql because Postgresql is more advanced and has a lot more features, it requires a higher learning curve.
+For this project, I have chosen to use PostgreSQL.I have chosen Psql because it is an object-relational database management system (ORDBMS). which means it has all the features of a Relational Database Management system but also uses object-oriented management systems like inheritance, objects and classes. Another reason I have chosen Psql is that it has been Acid compliant since 2001, which means the database will guarantee validity even with power outages or errors.Another great feature is PostgreSQL has ROLES and legacy roles for setting and maintaining permissions for the database
+
+**drawbacks**
+
+Compared to MySQL, PostgreSQL lacks on the performance side of things, and Postgresql is more advanced and has many more features, requiring a higher learning curve.
 
 <br>
 <br>
@@ -46,11 +50,13 @@ For this project, I have chosen to use PostgreSQL.I have chosen Psql because it 
 
 # **functionalities and benefits of an ORM**
 
-**functionalities of an ORM**
+<br>
 
-- The main functionalities of a Relational object Database (ORM) are to map relational SQL objects object oriented programming (OOP) .When working with a database using OOP languages, operations are performed like creating, reading, updating, and deleting data from a database.
+## **functionalities of an ORM**
 
-**example**: Using OOP to create a table
+- Object Relational Mapper or (ORM) for short, is designed to translate between the data used by databases and those used in object-oriented programming. An ORM lets you work with the backend data using object-oriented structures like inheritance, objects and classes to performe operations like creating, reading, updating, and deleting data from a database.
+
+**example**: Using ORM to create a class which will map to each field in the database
 
 ```python
 # creates class
@@ -66,6 +72,33 @@ class Comic(db.Model):
   db.ForeignKey('users.id'), nullable=False)
 ```
 
+**example**: what is created in the psql database
+
+```Psql
+comicbook=# \d comics
+ id          | integer                |           | not null | nextval('comics_id_seq'::regclass)
+ title       | character varying(100) |           | not null |
+ author      | character varying(100) |           |          |
+ comic_value | double precision       |           |          |
+ user_id     | integer                |           | not null |
+
+```
+
+**Example**:using ORM to create a new instance of a comic class which will be mapped and become another record in the table
+
+```python
+comic = Comic(
+              title = data['title'],
+              author = data['author'],
+              comic_value = data['comic_value'],
+              user_id = get_jwt_identity()
+              )
+
+               db.session.add(comic)
+               db.session.commit()
+
+```
+
 **example**: query using OOP
 
 ```python
@@ -74,7 +107,7 @@ class Comic(db.Model):
   return ComicSchema(many=True).dump(comics)
 ```
 
-**benefits of an ORM**
+## **benefits of an ORM**
 
 - Using an ORM helps prevent SQL injection attacks which helps with security threats
 - models are dry because you only write the models once, making it faster and easier to update and maintain.
@@ -96,77 +129,124 @@ class Comic(db.Model):
 <br>
 <br>
 
-## Database Realatships
+# Database Realatships
 
-The ERD above shows The user's entity has a one-to-many relationship to the comics entity because the user can store multiple comic books and is linked by the foreign key user_id, and is also linked to the reviews table. The user has many reviews, so it is a one-to-many. The comics entity has a one-to-one relationship with the reviews entity because each comic book has one personal review by the user. They are linked by the foreign key comic_id in the reviews entity.
+The ERD above shows The user's entity has a one-to-many relationship to the comics entity because the user can store multiple comic books and is linked by the foreign key user_id, and is also linked to the reviews table. The reason for the user tables linking to the comics table is so a user id can be assigned to a comic book to allow for the user to have multiple comics in their library. The user table is linked to the reviews table so that the review is assigned with the user id so it can be checked if the user has already entered a review for the comic book. The user has many reviews, so it is a one-to-many. The comics entity has a one-to-one relationship with the reviews entity because each comic book has one personal review by the user. They are linked by the foreign key comic_id in the reviews entity. The reason for the comics table linking to the reviews table is so the comic id is a assigned to the review so the review can show the details of the comic with review information.
 <br>
 <br>
 
-## methods/behaviour of the models
+# Methods and behaviours of the models
+
+## Users model
+
+In the users model, you have an id field which is the primary key of the user. It is an integer and is used as an identifier of each user. Then you have first_name and last_name, which are both strings and are set to nullable=True, which means that the user must enter the first and last name and can not be empty. The field email is also a string and set so it can't be empty, but it is also set to unique=True, which means that the email address can not be duplicated. Next is the password field, which is a string and can not be empty. It also needs to be at least eight characters. The field is_admin is a boolean which is set to default=false, which means every time a user is created, the is_admin field is set to false.
+
+**example of users model:**
 
 ```python
+class User(db.Model):
     __tablename__ = 'users'
-    # id is integer and is the primary key
+    # USER FIELDS
     id = db.Column(db.Integer, primary_key=True)
-    # first_name is a string and can not be empty
     first_name = db.Column(db.String,nullable=False)
-    # last_name is a string and can not be empty
     last_name = db.Column(db.String,nullable=False)
-    # email is s string and is unique so users dont have same email
     email = db.Column(db.String, nullable=False, unique=True)
-    # password is a string and cant be less then 8 characters
     password = db.Column(db.String,nullable=False)
-    # is_admin is a boolean
     is_admin = db.Column(db.Boolean, default=False)
-
     # TABLE RELATIONS
-    # this is were comic points to the user and review points to user table
-    comics = db.relationship('Comic', back_populates='user',cascade='all, delete')
+    comics = db.relationship('Comic', back_populates='user', cascade='all, delete')
     review= db.relationship('Review', back_populates='user', cascade='all, delete')
+
+
+class UserSchema(ma.Schema):
+    # GETS COMIC AND REVIEW FIELDS
+    comics = fields.List(fields.Nested('ComicSchema', exclude=['user']))
+
+    #   PASSWORD BIGGER THAN 8 CHARACTERS
+    password = fields.String(required=True, validate=
+        Length(min=8, error='Password must be at least 8 characters long'),
+    )
+    class Meta:
+        # FIELDS TO DISPLAY
+        fields = ('id','user','first_name','last_name','email', 'password', 'is_admin')
+        ordered = True
 ```
 
+<hr>
+
 <br>
 <br>
 
+## Comics model
+
+In the comics model, you have an id field which is the primary key of the comic. It is an integer and is used as an identifier of each comic book. The title field is a string and has a constraint of 100 characters. It can not be empty because the title will be used to make sure that it is not duplicated in the user's library. The title also needs to be more than two characters than you have the author, which is a string with a max of 100 characters and can be empty as it's not needed. Then, you have the comic_value set as a float to display the value in the correct format. user_id field is an Integer and is a foreign key, so it can link to the user's table and use the information from the user table to assign it to the comic book.
+
+**example of comics model:**
+
 ```python
+   class Comic(db.Model):
     __tablename__ = 'comics'
-    # id is a integer and is the primary key
+    # COMIC FIELDS
     id = db.Column(db.Integer, primary_key=True)
-    # title is a string and has a max of 100 characters and can not be empty
     title = db.Column(db.String(100),nullable=False)
-    # author is a string and has a max of 100 characters
     author = db.Column(db.String(100))
-    # comic_value is a float to repersent value in dollars
     comic_value = db.Column(db.Float)
-    # FOREIGN_KEY user_id us used to link to users and must not be empty
+    # FOREIGN_KEY
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
     # TABLE RELATIONS
-    # this is were user point to comics and review points to the comic table
-    user = db.relationship('User', back_populates='comics', cascade='all, delete')
+    user = db.relationship('User', back_populates='comics')
     review = db.relationship('Review', back_populates='comic', cascade='all, delete')
+
+
+class ComicSchema(ma.Schema):
+    user = fields.Nested('UserSchema', only=['first_name','last_name', 'email'])
+    #  NEST REVIEW FIELDS
+    review = fields.List(fields.Nested('ReviewSchema', exclude=['comic']))
+    #  VALADATES TITLE
+    title = fields.String(required=True, validate=
+        Length(min=2, error='Title must be at least 2 characters long')
+    )
+    class Meta:
+        # FIELDS TO DISPLAY
+        fields = ('id', 'title','author', 'comic_value',  'review',"user")
+        ordered = True
 ```
 
-```python
-   __tablename__ = 'reviews'
-    # id is a integer and is the primary key
-    id = db.Column(db.Integer, primary_key=True)
-    # review is a string and and the max characters is 200
-    review = db.Column(db.String(200))
-    # rating is a int and the max is 10
-    rating = db.Column(db.Integer)
-    # date is used to recored date of reviews
-    date = db.Column(db.Date)
-    # user_id is a foreignkey that links to users
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    # comic_d is a foreignkey that links to comics id
-    comic_id = db.Column(db.Integer, db.ForeignKey('comics.id'), nullable=False,unique=True)
+<hr>
 
+<br>
+<br>
+
+## reviews model
+
+The following example shows the reviews model that has the field id, which is an Integer and is a primary key that acts as an identifier of each review. The field review is a string and has a constraint of 200 characters. The rating field is an integer, and the input can only be between 1 and 10. then you have the date field, which will save the date when a review is done on a comic book. user_id is an Integer and is a foreign key that links to the user to grab the user id and assign it to the review. Than you have the comic_id, which is also an integer and is a foreign key to assign the comic id to the review
+
+**example of review model:**
+
+```python
+  class Review(db.Model):
+    __tablename__ = 'reviews'
+    # REVIEW FIELDS
+    id = db.Column(db.Integer, primary_key=True)
+    review = db.Column(db.String(200))
+    rating = db.Column(db.Integer,nullable=False)
+    date = db.Column(db.Date)
+    # FOREIGN_KEYS
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    comic_id = db.Column(db.Integer, db.ForeignKey('comics.id'), nullable=False,unique=True)
     # TABLE RELATIONS
-    # this is were user point to review and comic points to the review table
     user = db.relationship("User", back_populates="review" )
     comic = db.relationship("Comic", back_populates="review")
 
+
+class ReviewSchema(ma.Schema):
+    # NEST COMIC FIELDS
+    comic = fields.Nested('ComicSchema',only=['title'])
+
+    class Meta:
+        # FIELDS DISPLAY
+        fields = ('comic','id', 'review','rating', 'date')
+        ordered = True
 ```
 
 <br>
@@ -176,7 +256,7 @@ The ERD above shows The user's entity has a one-to-many relationship to the comi
 
 <br>
 
-Table of Contents
+**Table of Contents**
 
 - [User Endpoints](#user-end-points)
 - [Comic Book Endpoints](#comic-book-endpoints)

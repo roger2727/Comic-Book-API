@@ -20,8 +20,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     # GETS COMIC AND REVIEW FIELDS
     comics = fields.List(fields.Nested('ComicSchema', exclude=['user']))
-    # review = fields.List(fields.Nested('ReviewSchema', exclude=['user']))
-    
+ 
     
     #   PASSWORD BIGGER THAN 8 CHARACTERS
     password = fields.String(required=True, validate=
