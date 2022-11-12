@@ -40,7 +40,7 @@ For this project, I have chosen to use PostgreSQL.I have chosen Psql because it 
 
 **drawbacks**
 
-Compared to MySQL, PostgreSQL lacks on the performance side of things, and Postgresql is more advanced and has many more features, requiring a higher learning curve.
+Compared to MySQL, PostgreSQL lacks on the performance side of things, and Postgresql is more advanced and has many more features, requiring a higher learning curve.Another drawback is there is No caching for Query execution plans,which means when the sever runs again the sql server need to create another query plan which can hinder database perfomance
 
 <br>
 <br>
